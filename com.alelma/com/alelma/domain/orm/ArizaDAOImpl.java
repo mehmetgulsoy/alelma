@@ -10,20 +10,23 @@ package com.alelma.domain.orm;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
-import java.util.List;
 import java.util.ArrayList;
-import com.alelma.domain.*;
-import com.alelma.domain.dao.ArizaDAO;
 import java.util.Date;
-import javax.annotation.Resource;
+import java.util.List;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
 import org.apache.commons.dbutils.QueryRunner;
+
+import com.alelma.domain.Ariza;
+import com.alelma.domain.ArizaKey;
+import com.alelma.domain.dao.ArizaDAO;
 
 /**
  * This class provides methods to populate DB Table of ariza

@@ -41,14 +41,12 @@ public class UrunKayit {
     }
     
     public void save(){
-        fdlfdş
+         
         Ariza ariza = new Ariza();
         ariza.setTeslimTarih(teslimTarihi);
         ariza.setTanim(kısaTanım);
         ariza.setUzunTanim(uzunTanım);   
-        ///*
-        dsdsdsds
-        
+  
         ArizaDAO arizaDAO = new ArizaDAOImpl();        
         try {
             arizaDAO.create(ariza);
