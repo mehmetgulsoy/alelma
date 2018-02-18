@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>alelma</title>
+            </f:facet>
+        </h:head>
+
+        <h:body>
+            <h:form>  
+                <p:growl id="messages"/>
+
+                <p:panel id="panel" header="Ürün Sorgulama"  style="width: auto; margin: auto ;">
+
+                    <h:panelGrid columns="3" cellpadding="5">
+                        <h:outputLabel for="seriNo" value="Seri No" />
+                        <p:inputText id="seriNo"  required="true" />
+
+                        <p:commandButton update="messages" class="" value="Giriş" action="j_security_check" />
+
+
+                    </h:panelGrid>
+                </p:panel>
+            </h:form>
+            <p:spacer></p:spacer>
+            <h:form>
+                <p:dataTable var="car" value="#{dtFilterView.cars}" widgetVar="carsTable"
+                             emptyMessage="Uygun Kayıt Bulunamadı" filteredValue="#{dtFilterView.filteredCars}">
+
+                    <f:facet name="header">
+                        <p:outputPanel style="text-align: left">
+                            <h:outputText value="Arama:" />
+                            <p:inputText id="globalFilter" onkeyup="PF('carsTable').filter()" style="width:150px" placeholder="Tabloda Arayın"/>
+                        </p:outputPanel>
+                    </f:facet>
+
+                    <p:column filterBy="#{car.id}" headerText="Seri No">
+                        <h:outputText value="#{car.id}" />
+                    </p:column>
+
+                    <p:column headerText="Year" >
+                        <h:outputText value="#{car.year}" />
+                    </p:column>
+
+                    <p:column headerText="Brand" >
+                        <h:outputText value="#{car.brand}" />
+                    </p:column>
+
+                    <p:column headerText="Color" >
+                        <h:outputText value="#{car.color}" />
+                    </p:column>
+
+                    <p:column headerText="Status" >
+                        <h:outputText value="#{car.sold ? 'Sold': 'Sale'}" />
+                    </p:column>
+
+                    <p:column headerText="Fiyat" >
+                        <h:outputText value="#{car.price}">
+                            <f:convertNumber currencySymbol="TL" type="currency"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </h:body>
+
+    </f:view>
+</html>
+

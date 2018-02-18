@@ -7,9 +7,10 @@
 
 package com.alelma.domain.dao;
 
-import java.sql.Connection;
 import java.sql.SQLException;
-import com.alelma.domain.*;
+
+import com.alelma.domain.Ariza;
+import com.alelma.domain.ArizaKey;
 
 /**
  * This interface provides methods to populate DB Table of ariza
