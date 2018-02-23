@@ -18,7 +18,9 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 public class FilterView implements Serializable {
      
-    private List<Car> cars;
+ 	private static final long serialVersionUID = -3278382760778582553L;
+
+	private List<Car> cars;
      
     private List<Car> filteredCars;
      
@@ -30,7 +32,9 @@ public class FilterView implements Serializable {
         cars = service.createCars(10);
     }
      
-    public boolean filterByPrice(Object value, Object filter, Locale locale) {
+
+	@SuppressWarnings("unchecked")
+	public boolean filterByPrice(Object value, Object filter, Locale locale) {
         String filterText = (filter == null) ? null : filter.toString().trim();
         if(filterText == null||filterText.equals("")) {
             return true;
@@ -40,7 +44,7 @@ public class FilterView implements Serializable {
             return false;
         }
          
-        return ((Comparable) value).compareTo(Integer.valueOf(filterText)) > 0;
+        return ((Comparable<Integer>) value).compareTo(Integer.valueOf(filterText)) > 0;
     }
      
     public List<String> getBrands() {

@@ -35,6 +35,7 @@ public class urunMail {
 
     static String msgText1 = "This is a message body.\nHere's line two.";
     static String msgText2 = "This is the text in the message attachment.";
+ 
 
     public void mail() {
 
@@ -91,7 +92,7 @@ public class urunMail {
 
     public void mail2() throws NamingException, AddressException, MessagingException {
         
-        
+    	
         Context initCtx = new InitialContext();
         Context envCtx = (Context) initCtx.lookup("java:comp/env");
         Session session = (Session) envCtx.lookup("mail/Session");
@@ -99,14 +100,14 @@ public class urunMail {
         String from = "mehmet@liman.com.tr";
          
         String to = "m.mehmetgulsoy@gmail.com";
-        
+        session.setDebug(true);
         try {
             // create a message
             MimeMessage msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress(from));
             InternetAddress[] address = {new InternetAddress(to)};
             msg.setRecipients(Message.RecipientType.TO, address);
-            msg.setSubject("JavaMail APIs Multipart Test");
+            msg.setSubject("Alelema Test");
             msg.setSentDate(new Date());
             // create and fill the first message part
             MimeBodyPart mbp1 = new MimeBodyPart();
@@ -132,5 +133,8 @@ public class urunMail {
         }
 
     }
+    
+   
+
 
 }

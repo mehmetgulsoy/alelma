@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<Context>
+    <Resource name="jdbc/postgres" auth="Container" type="javax.sql.DataSource"
+		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://127.0.0.1:5432/mytest"
+		username="postgres" password="1453" maxActive="20" maxIdle="10"/>
+		
+	<Resource name="mail/Session" auth="Container" type="javax.mail.Session"
+		mail.smtp.host="mail.liman.com.tr" mail.smtp.port="587"
+		mail.smtp.auth="true" mail.user="mehmet@liman.com.tr" password="3141" />
+		
+	<Realm className="org.apache.catalina.realm.DataSourceRealm"
+		dataSourceName="jdbc/postgres" userTable="users" userNameCol="user_name"
+		userCredCol="user_pass" userRoleTable="user_roles" roleNameCol="role_name" />	
+
+</Context>

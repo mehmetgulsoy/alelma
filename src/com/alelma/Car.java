@@ -20,6 +20,10 @@ import java.io.Serializable;
 public class Car implements Serializable {
  
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6588409908910129897L;
 	public String id;
     public String brand;
     public int year;
