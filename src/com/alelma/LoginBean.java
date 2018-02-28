@@ -13,7 +13,6 @@ public class LoginBean {
 
 	private String username;
 	private String password;
-	private String password2;
 
 	public String getUsername() {
 		return username;
