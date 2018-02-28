@@ -13,6 +13,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/myjars"/>
-	<classpathentry kind="lib" path="/usr/share/tomcat/myjars/tomcat-dbcp-7.0.30.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

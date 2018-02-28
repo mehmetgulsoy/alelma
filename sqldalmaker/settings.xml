@@ -41,7 +41,7 @@
     <!-- pwd: password; -->
 
     <jdbc jar="../myjars/postgresql-42.1.4.jar" class="org.postgresql.Driver" 
-          url="jdbc:postgresql://127.0.0.1:5432/mytest" user="postgres" pwd="1453" />
+          url="jdbc:postgresql://127.0.0.1:5432/alelma" user="postgres" pwd="1453" />
 
     <!-- At the moment, type-map is used only for C++. For other target languages, 
     it can be removed. Below is an example for C++ and SQLite. -->

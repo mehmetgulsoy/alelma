@@ -2,5 +2,7 @@
 <dto-classes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="dto.xsd">
 	<dto-class name="Ariza" ref="ariza"/>
+	    <dto-class name="UserRole" ref="user_roles"/>
+    <dto-class name="User" ref="users"/>
 	
 </dto-classes>

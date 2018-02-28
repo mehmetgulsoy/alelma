@@ -2,38 +2,33 @@ package com.alelma.dao;
 
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-
 import com.alelma.dto.Ariza;
 
 /**
- * This class is created by SQL DAL Maker. Don't modify it manually.
- * SQL DAL Maker project web-site: http://sqldalmaker.sourceforge.net
+ * This class is created by SQL DAL Maker. Don't modify it manually. SQL DAL
+ * Maker project web-site: http://sqldalmaker.sourceforge.net
  */
- 
-public class ArizaDAO {
+public class ArizaDao {
 
-	 
 	protected final DataStore ds;
 
-	public ArizaDAO(DataStore ds) {		
+	public ArizaDao(DataStore ds) {
 		this.ds = ds;
 	}
 
 	/**
-	 * CRUD-Create. The table 'ariza'.
-	 * Auto-generated values are assigned to appropriate fields of DTO.
-	 * Returns the number of affected rows or -1 on error.
+	 * CRUD-Create. The table 'ariza'. Auto-generated values are assigned to
+	 * appropriate fields of DTO. Returns the number of affected rows or -1 on
+	 * error.
 	 */
 	public int createAriza(Ariza p) throws Exception {
 
-		String sql = "INSERT INTO ariza (tanim, teslimtarih, uzuntanim, kayittarih) " 
-				 + "VALUES (?, ?, ?, ?)";
+		String sql = "INSERT INTO ariza (tanim, teslimtarih, uzuntanim) " + "VALUES (?, ?, ?)";
 
-		String []genColNames = new String[] {"id"};
-		Object []genValues = new Object[genColNames.length];
+		String[] genColNames = new String[] { "id" };
+		Object[] genValues = new Object[genColNames.length];
 
-		int res = ds.insert(sql, genColNames, genValues, p.getTanim(), p.getTeslimtarih(), p.getUzuntanim(), p.getKayittarih());
+		int res = ds.insert(sql, genColNames, genValues, p.getTanim(), p.getTeslimtarih(), p.getUzuntanim());
 
 		p.setId(ds.castGeneratedValue(Integer.class, genValues[0]));
 
@@ -85,34 +80,33 @@ public class ArizaDAO {
 	}
 
 	/**
-	 * CRUD-Update. The table 'ariza'.
-	 * Returns the number of affected rows or -1 on error.
+	 * CRUD-Update. The table 'ariza'. Returns the number of affected rows or -1 on
+	 * error.
 	 */
 	public int updateAriza(Ariza p) throws Exception {
 
-		String sql = "UPDATE ariza SET " 
-				 + " tanim = ?, teslimtarih = ?, uzuntanim = ?, kayittarih = ? " 
-				 + "WHERE id = ?";
+		String sql = "UPDATE ariza SET " + " tanim = ?, teslimtarih = ?, uzuntanim = ?, kayittarih = ? "
+				+ "WHERE id = ?";
 
 		return ds.execDML(sql, p.getTanim(), p.getTeslimtarih(), p.getUzuntanim(), p.getKayittarih(), p.getId());
 	}
 
 	/**
-	 * CRUD-Update. The table 'ariza'.
-	 * Returns the number of affected rows or -1 on error.
+	 * CRUD-Update. The table 'ariza'. Returns the number of affected rows or -1 on
+	 * error.
 	 */
-	public int updateAriza(String tanim, java.util.Date teslimtarih, String uzuntanim, java.util.Date kayittarih, Integer id) throws Exception {
+	public int updateAriza(String tanim, java.util.Date teslimtarih, String uzuntanim, java.util.Date kayittarih,
+			Integer id) throws Exception {
 
-		String sql = "UPDATE ariza SET " 
-				 + " tanim = ?, teslimtarih = ?, uzuntanim = ?, kayittarih = ? " 
-				 + "WHERE id = ?";
+		String sql = "UPDATE ariza SET " + " tanim = ?, teslimtarih = ?, uzuntanim = ?, kayittarih = ? "
+				+ "WHERE id = ?";
 
 		return ds.execDML(sql, tanim, teslimtarih, uzuntanim, kayittarih, id);
 	}
 
 	/**
-	 * CRUD-Delete. The table 'ariza'.
-	 * Returns the number of affected rows or -1 on error.
+	 * CRUD-Delete. The table 'ariza'. Returns the number of affected rows or -1 on
+	 * error.
 	 */
 	public int deleteAriza(Ariza p) throws Exception {
 
@@ -122,8 +116,8 @@ public class ArizaDAO {
 	}
 
 	/**
-	 * CRUD-Delete. The table 'ariza'.
-	 * Returns the number of affected rows or -1 on error.
+	 * CRUD-Delete. The table 'ariza'. Returns the number of affected rows or -1 on
+	 * error.
 	 */
 	public int deleteAriza(Integer id) throws Exception {
 

@@ -1,4 +1,5 @@
 package com.alelma.dao;
+
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -9,14 +10,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
- 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 
 /*
 This is an example of how to implement and use DataStore with Apache DbUtils.
@@ -26,386 +25,375 @@ Copy-paste this code to your project and change it for your needs.
 */
 public class DataStoreManager {
 
-    private Connection connection;
+	private Connection connection;
 
-    public void open() throws Exception {
+	public void open() throws Exception {
 
-        // Or add JDBC driver to the project build-path:
-        // Class.forName("org.h2.Driver").newInstance();
+		// Or add JDBC driver to the project build-path:
+		// Class.forName("org.h2.Driver").newInstance();
 		InitialContext cxt = new InitialContext();
-		DataSource ds = (DataSource) cxt.lookup( "java:/comp/env/jdbc/postgres" );
+		DataSource ds = (DataSource) cxt.lookup("java:/comp/env/jdbc/postgres");
 
-		if ( ds == null ) {
-		   throw new Exception("Veri Tabanı Bağlantısı başarısız!");
+		if (ds == null) {
+			throw new Exception("Veri Tabanı Bağlantısı başarısız!");
 		}
 
-        connection = ds.getConnection();
-        connection.setAutoCommit(false);
-    }
+		connection = ds.getConnection();
+		connection.setAutoCommit(false);
+	}
 
-    public void commit() throws Exception {
-        connection.commit();
-    }
+	public void commit() throws Exception {
+		connection.commit();
+	}
 
-    public void rollback() throws Exception {
-        connection.rollback();
-    }
+	public void rollback() throws Exception {
+		connection.rollback();
+	}
 
-    public void close() throws Exception {
+	public void close() throws Exception {
 
-        // connection.setAutoCommit(true) is required for
-        // org.apache.derby.jdbc.ClientDriver to prevent
-        // java.sql.SQLException: Cannot close a connection while a transaction
-        // is still active.
+		// connection.setAutoCommit(true) is required for
+		// org.apache.derby.jdbc.ClientDriver to prevent
+		// java.sql.SQLException: Cannot close a connection while a transaction
+		// is still active.
 
-        connection.setAutoCommit(true);
+		connection.setAutoCommit(true);
 
-        connection.close();
-    }
+		connection.close();
+	}
 
-    private final MyDataStore ds = new MyDataStore();
+	private final MyDataStore ds = new MyDataStore();
 
-    // //////////////////////////////////////////////////
-    //
-    // MyDataStore is hidden, use factory method pattern:
+	// //////////////////////////////////////////////////
+	//
+	// MyDataStore is hidden, use factory method pattern:
 
-//    public OrderDao createOrderDao() {
-//        return new OrderDao(ds);
-//    }
-    
-    public ArizaDAO createArizaDao() {
-    	return new ArizaDAO(ds);
-    }
+	// public OrderDao createOrderDao() {
+	// return new OrderDao(ds);
+	// }
 
-    private class MyDataStore extends DataStore {
+	public ArizaDao createArizaDao() {
+		return new ArizaDao(ds);
+	}
 
-        protected final QueryRunner2 queryRunner;
+	private class MyDataStore extends DataStore {
 
-        public MyDataStore() {
-            queryRunner = new QueryRunner2(false /*pmdKnownBroken*/);
-        }
+		protected final QueryRunner2 queryRunner;
 
-        private boolean isStringValue(Class<?> inValueType) {
-            // Consider any CharSequence (including StringBuffer and
-            // StringBuilder) as a String.
-            return (CharSequence.class.isAssignableFrom(inValueType) || StringWriter.class
-                    .isAssignableFrom(inValueType));
-        }
+		public MyDataStore() {
+			queryRunner = new QueryRunner2(false /* pmdKnownBroken */);
+		}
 
-        private boolean isDateValue(Class<?> inValueType) {
-            return (java.util.Date.class.isAssignableFrom(inValueType) && !(java.sql.Date.class
-                    .isAssignableFrom(inValueType)
-                    || java.sql.Time.class.isAssignableFrom(inValueType) || java.sql.Timestamp.class
-                    .isAssignableFrom(inValueType)));
-        }
+		private boolean isStringValue(Class<?> inValueType) {
+			// Consider any CharSequence (including StringBuffer and
+			// StringBuilder) as a String.
+			return (CharSequence.class.isAssignableFrom(inValueType)
+					|| StringWriter.class.isAssignableFrom(inValueType));
+		}
 
-        protected void prepareParams(Object... params) {
+		private boolean isDateValue(Class<?> inValueType) {
+			return (java.util.Date.class.isAssignableFrom(inValueType)
+					&& !(java.sql.Date.class.isAssignableFrom(inValueType)
+							|| java.sql.Time.class.isAssignableFrom(inValueType)
+							|| java.sql.Timestamp.class.isAssignableFrom(inValueType)));
+		}
 
-            for (int i = 0; i < params.length; i++) {
+		protected void prepareParams(Object... params) {
 
-                if (params[i] != null) {
+			for (int i = 0; i < params.length; i++) {
 
-                    if (isStringValue(params[i].getClass())) {
-                        params[i] = params[i].toString();
-                    } else if (isDateValue(params[i].getClass())) {
-                        params[i] = new java.sql.Timestamp(
-                                ((java.util.Date) params[i]).getTime());
-                    }
-                }
-            }
-        }
+				if (params[i] != null) {
 
-        /**
-         * QueryRunner2 allows to get generated keys after INSERT.
-         * http://stackoverflow.com/questions/8705036/how-to-get-generated-keys-with-commons-dbutils
-         * https://issues.apache.org/jira/browse/DBUTILS-54
-         */
-        class QueryRunner2 extends QueryRunner {
+					if (isStringValue(params[i].getClass())) {
+						params[i] = params[i].toString();
+					} else if (isDateValue(params[i].getClass())) {
+						params[i] = new java.sql.Timestamp(((java.util.Date) params[i]).getTime());
+					}
+				}
+			}
+		}
 
-            public QueryRunner2(boolean pmdKnownBroken) {
-                super(pmdKnownBroken);
-            }
+		/**
+		 * QueryRunner2 allows to get generated keys after INSERT.
+		 * http://stackoverflow.com/questions/8705036/how-to-get-generated-keys-with-commons-dbutils
+		 * https://issues.apache.org/jira/browse/DBUTILS-54
+		 */
+		class QueryRunner2 extends QueryRunner {
 
-            public int insert(String sql, String[] genColNames, Object[] genValues,
-                              Object... params) throws SQLException {
+			public QueryRunner2(boolean pmdKnownBroken) {
+				super(pmdKnownBroken);
+			}
 
-                PreparedStatement stmt = null;
-                int rows = 0;
+			public int insert(String sql, String[] genColNames, Object[] genValues, Object... params)
+					throws SQLException {
 
-                try {
+				PreparedStatement stmt = null;
+				int rows = 0;
 
-                    stmt = connection.prepareStatement(sql, genColNames);
-                    super.fillStatement(stmt, params);
-                    rows = stmt.executeUpdate();
+				try {
 
-                    doAfterInsert(stmt, genValues);
+					stmt = connection.prepareStatement(sql, genColNames);
+					super.fillStatement(stmt, params);
+					rows = stmt.executeUpdate();
 
-                } catch (SQLException e) {
-                    super.rethrow(e, sql, params);
+					doAfterInsert(stmt, genValues);
 
-                } finally {
-                    DbUtils.close(stmt);
-                }
+				} catch (SQLException e) {
+					super.rethrow(e, sql, params);
 
-                return rows;
-            }
+				} finally {
+					DbUtils.close(stmt);
+				}
 
-            private void doAfterInsert(PreparedStatement stmt, Object[] genValues)
-                    throws SQLException {
+				return rows;
+			}
 
-                ResultSet keys = stmt.getGeneratedKeys();
+			private void doAfterInsert(PreparedStatement stmt, Object[] genValues) throws SQLException {
 
-                if (keys != null) {
+				ResultSet keys = stmt.getGeneratedKeys();
 
-                    try {
+				if (keys != null) {
 
-                        int i = 0;
+					try {
 
-                        while (keys.next()) {
+						int i = 0;
 
-                            // UNCOMMENT THE LINE WHICH IS WORKING WITH YOUR JDBC DRIVER
+						while (keys.next()) {
 
-                            // keys.getBigDecimal(1) works with most of tested
-                            // drivers (except SQLite)
+							// UNCOMMENT THE LINE WHICH IS WORKING WITH YOUR JDBC DRIVER
 
-                            Object obj = keys.getBigDecimal(1);
+							// keys.getBigDecimal(1) works with most of tested
+							// drivers (except SQLite)
 
-                            // keys.getObject(1) works with all tested drivers,
-                            // but it can return Long for Integer column (MySQL)
+							Object obj = keys.getBigDecimal(1);
 
-                            // Object obj = keys.getObject(1);
+							// keys.getObject(1) works with all tested drivers,
+							// but it can return Long for Integer column (MySQL)
 
-                            genValues[i] = obj;
+							// Object obj = keys.getObject(1);
 
-                            i++;
-                        }
+							genValues[i] = obj;
 
-                    } finally {
+							i++;
+						}
 
-                        DbUtils.close(keys);
-                    }
-                }
-            }
-        }
+					} finally {
 
-        @Override
-        public <T> T castGeneratedValue(Class<T> type, Object obj) {
+						DbUtils.close(keys);
+					}
+				}
+			}
+		}
 
-            // YOU CAN CHANGE/SIMPLIFY THIS METHOD IF IT IS POSSIBLE WITH YOUR JDBC DRIVER
+		@Override
+		public <T> T castGeneratedValue(Class<T> type, Object obj) {
 
-            // For many drivers (SQL Server 2008, Derby), keys.getObject(1)
-            // returns BigDecimal independently of type of column
+			// YOU CAN CHANGE/SIMPLIFY THIS METHOD IF IT IS POSSIBLE WITH YOUR JDBC DRIVER
 
-            if (obj instanceof BigDecimal) {
+			// For many drivers (SQL Server 2008, Derby), keys.getObject(1)
+			// returns BigDecimal independently of type of column
 
-                BigDecimal bigDecimal = (BigDecimal) obj;
+			if (obj instanceof BigDecimal) {
 
-                if (Byte.class.equals(type)) {
+				BigDecimal bigDecimal = (BigDecimal) obj;
 
-                    obj = bigDecimal.byteValueExact();
+				if (Byte.class.equals(type)) {
 
-                } else if (Float.class.equals(type)) {
-                    // there is no 'exact' version
-                    obj = bigDecimal.floatValue();
+					obj = bigDecimal.byteValueExact();
 
-                } else if (Double.class.equals(type)) {
-                    // there is no 'exact' version
-                    obj = bigDecimal.doubleValue();
+				} else if (Float.class.equals(type)) {
+					// there is no 'exact' version
+					obj = bigDecimal.floatValue();
 
-                } else if (Integer.class.equals(type)) {
+				} else if (Double.class.equals(type)) {
+					// there is no 'exact' version
+					obj = bigDecimal.doubleValue();
 
-                    obj = bigDecimal.intValueExact();
+				} else if (Integer.class.equals(type)) {
 
-                } else if (Long.class.equals(type)) {
+					obj = bigDecimal.intValueExact();
 
-                    obj = bigDecimal.longValueExact();
+				} else if (Long.class.equals(type)) {
 
-                } else if (BigInteger.class.equals(type)) {
+					obj = bigDecimal.longValueExact();
 
-                    obj = bigDecimal.toBigIntegerExact();
+				} else if (BigInteger.class.equals(type)) {
 
-                } else if (BigDecimal.class.equals(type)) {
+					obj = bigDecimal.toBigIntegerExact();
 
-                    obj = bigDecimal;
+				} else if (BigDecimal.class.equals(type)) {
 
-                } else if (Object.class.equals(type)) {
+					obj = bigDecimal;
 
-                    obj = bigDecimal;
+				} else if (Object.class.equals(type)) {
 
-                } else {
+					obj = bigDecimal;
 
-                    throw new ClassCastException("Unexpected class '"
-                            + type.getName() + "'");
-                }
-            }
+				} else {
 
-            // cast:
+					throw new ClassCastException("Unexpected class '" + type.getName() + "'");
+				}
+			}
 
-            // Throws:
-            // ClassCastException - if the object is not null and is not
-            // assignable
-            // to the type T.
+			// cast:
 
-            return type.cast(obj);
-        }
+			// Throws:
+			// ClassCastException - if the object is not null and is not
+			// assignable
+			// to the type T.
 
-        @Override
-        public int insert(String sql, String[] genColNames, Object[] genValues,
-                          Object... params) throws SQLException {
+			return type.cast(obj);
+		}
 
-            prepareParams(params);
+		@Override
+		public int insert(String sql, String[] genColNames, Object[] genValues, Object... params) throws SQLException {
 
-            return queryRunner.insert(sql, genColNames, genValues, params);
-        }
+			prepareParams(params);
 
-        @Override
-        public int execDML(String sql, Object... params) throws Exception {
+			return queryRunner.insert(sql, genColNames, genValues, params);
+		}
 
-            prepareParams(params);
+		@Override
+		public int execDML(String sql, Object... params) throws Exception {
 
-            return queryRunner.update(connection, sql, params);
-        }
+			prepareParams(params);
 
-        @Override
-        public <T> T query(final Class<T> type, String sql, Object... params)
-                throws Exception {
+			return queryRunner.update(connection, sql, params);
+		}
 
-            ResultSetHandler<T> h = new ResultSetHandler<T>() {
+		@Override
+		public <T> T query(final Class<T> type, String sql, Object... params) throws Exception {
 
-                @Override
-                public T handle(final ResultSet rs) throws SQLException {
+			ResultSetHandler<T> h = new ResultSetHandler<T>() {
 
-                    if (!rs.next()) {
-                        return null;
-                    }
+				@Override
+				public T handle(final ResultSet rs) throws SQLException {
 
-                    // the first column is 1
-                    T res = type.cast(rs.getObject(1));
+					if (!rs.next()) {
+						return null;
+					}
 
-                    if (rs.next()) {
-                        throw new SQLException("More than 1 row available");
-                    }
+					// the first column is 1
+					T res = type.cast(rs.getObject(1));
 
-                    return res;
-                }
-            };
+					if (rs.next()) {
+						throw new SQLException("More than 1 row available");
+					}
 
-            prepareParams(params);
+					return res;
+				}
+			};
 
-            return queryRunner.query(connection, sql, h, params);
-        }
+			prepareParams(params);
 
-        @Override
-        public <T> List<T> queryList(final Class<T> type, String sql,
-                                     Object... params) throws Exception {
+			return queryRunner.query(connection, sql, h, params);
+		}
 
-            final ArrayList<T> res = new ArrayList<T>();
+		@Override
+		public <T> List<T> queryList(final Class<T> type, String sql, Object... params) throws Exception {
 
-            ResultSetHandler<Void> h = new ResultSetHandler<Void>() {
+			final ArrayList<T> res = new ArrayList<T>();
 
-                @Override
-                public Void handle(final ResultSet rs) throws SQLException {
+			ResultSetHandler<Void> h = new ResultSetHandler<Void>() {
 
-                    while (rs.next()) {
-                        // the first column is 1
-                        T t = type.cast(rs.getObject(1));
-                        res.add(t);
-                    }
+				@Override
+				public Void handle(final ResultSet rs) throws SQLException {
 
-                    return null;
-                }
-            };
+					while (rs.next()) {
+						// the first column is 1
+						T t = type.cast(rs.getObject(1));
+						res.add(t);
+					}
 
-            prepareParams(params);
+					return null;
+				}
+			};
 
-            queryRunner.query(connection, sql, h, params);
+			prepareParams(params);
 
-            return res;
-        }
+			queryRunner.query(connection, sql, h, params);
 
-        @Override
-        public <T> T queryDto(String sql, final RowHandler<T> rowHandler,
-                              Object... params) throws Exception {
+			return res;
+		}
 
-            ResultSetHandler<T> h = new ResultSetHandler<T>() {
+		@Override
+		public <T> T queryDto(String sql, final RowHandler<T> rowHandler, Object... params) throws Exception {
 
-                @Override
-                public T handle(final ResultSet rs) throws SQLException {
+			ResultSetHandler<T> h = new ResultSetHandler<T>() {
 
-                    if (!rs.next()) {
-                        return null;
-                    }
+				@Override
+				public T handle(final ResultSet rs) throws SQLException {
 
-                    RowData vr = new RowData() {
+					if (!rs.next()) {
+						return null;
+					}
 
-                        public <V> V getValue(Class<V> type, String columnLabel)
-                                throws Exception {
+					RowData vr = new RowData() {
 
-                            return type.cast(rs.getObject(columnLabel));
-                        }
-                    };
+						public <V> V getValue(Class<V> type, String columnLabel) throws Exception {
 
-                    T res;
+							return type.cast(rs.getObject(columnLabel));
+						}
+					};
 
-                    try {
-                        res = rowHandler.handleRow(vr);
-                    } catch (Exception e) {
-                        throw new SQLException(e);
-                    }
+					T res;
 
-                    if (rs.next()) {
-                        throw new SQLException("More than 1 row available");
-                    }
+					try {
+						res = rowHandler.handleRow(vr);
+					} catch (Exception e) {
+						throw new SQLException(e);
+					}
 
-                    return res;
-                }
-            };
+					if (rs.next()) {
+						throw new SQLException("More than 1 row available");
+					}
 
-            prepareParams(params);
+					return res;
+				}
+			};
 
-            return queryRunner.query(connection, sql, h, params);
-        }
+			prepareParams(params);
 
-        @Override
-        public <T> List<T> queryDtoList(String sql,
-                                        final RowHandler<T> rowHandler, Object... params)
-                throws Exception {
+			return queryRunner.query(connection, sql, h, params);
+		}
 
-            final ArrayList<T> res = new ArrayList<T>();
+		@Override
+		public <T> List<T> queryDtoList(String sql, final RowHandler<T> rowHandler, Object... params) throws Exception {
 
-            ResultSetHandler<Void> h = new ResultSetHandler<Void>() {
+			final ArrayList<T> res = new ArrayList<T>();
 
-                @Override
-                public Void handle(final ResultSet rs) throws SQLException {
+			ResultSetHandler<Void> h = new ResultSetHandler<Void>() {
 
-                    RowData vr = new RowData() {
+				@Override
+				public Void handle(final ResultSet rs) throws SQLException {
 
-                        public <V> V getValue(Class<V> type, String columnLabel)
-                                throws Exception {
+					RowData vr = new RowData() {
 
-                            return type.cast(rs.getObject(columnLabel));
-                        }
-                    };
+						public <V> V getValue(Class<V> type, String columnLabel) throws Exception {
 
-                    while (rs.next()) {
+							return type.cast(rs.getObject(columnLabel));
+						}
+					};
 
-                        try {
-                            T t = rowHandler.handleRow(vr);
-                            res.add(t);
-                        } catch (Exception e) {
-                            throw new SQLException(e);
-                        }
-                    }
+					while (rs.next()) {
 
-                    return null;
-                }
-            };
+						try {
+							T t = rowHandler.handleRow(vr);
+							res.add(t);
+						} catch (Exception e) {
+							throw new SQLException(e);
+						}
+					}
 
-            prepareParams(params);
+					return null;
+				}
+			};
 
-            queryRunner.query(connection, sql, h, params);
+			prepareParams(params);
 
-            return res;
-        }
-    }
+			queryRunner.query(connection, sql, h, params);
+
+			return res;
+		}
+	}
 }

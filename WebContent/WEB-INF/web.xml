@@ -5,10 +5,6 @@
 	version="3.0">
 	<display-name>alelma</display-name>
 
-	<welcome-file-list>
-		<welcome-file>login.xhtml</welcome-file>
-	</welcome-file-list>
-
 	<context-param>
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
 		<param-value>Development</param-value>
@@ -20,11 +16,53 @@
 		<res-type>javax.mail.Session</res-type>
 		<res-auth>Container</res-auth>
 	</resource-ref>
-
+	
 	<resource-ref>
 		<description>postgreSQL Datasource example</description>
 		<res-ref-name>jdbc/postgres</res-ref-name>
 		<res-type>javax.sql.DataSource</res-type>
 		<res-auth>Container</res-auth>
 	</resource-ref>
+
+
+	<welcome-file-list>
+		<welcome-file>login.xhtml</welcome-file>
+	</welcome-file-list>
+	
+	<security-role>
+		<role-name>bayi</role-name>
+	</security-role>
+	<security-role>
+		<role-name>uye</role-name>
+	</security-role>
+	<security-role>
+		<role-name>idareci</role-name>
+	</security-role>
+	
+	<security-constraint>
+		<display-name>Constraint1</display-name>
+		<web-resource-collection>
+			<web-resource-name>wrcoll</web-resource-name>
+			<description />
+			<url-pattern>/public/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<description />
+			<role-name>uye</role-name>
+			<role-name>bayi</role-name>
+			<role-name>idareci</role-name>
+		</auth-constraint>
+	</security-constraint>
+	
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>DataSourceRealm</realm-name>
+		<form-login-config>
+			<form-login-page>/login.xhtml</form-login-page>
+			<form-error-page>/error/error.xhtml</form-error-page>
+		</form-login-config>
+	</login-config>
+
+
+
 </web-app>

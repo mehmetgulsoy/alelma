@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.alelma;
 
 import javax.faces.application.FacesMessage;
@@ -16,51 +11,52 @@ import javax.servlet.http.HttpServletRequest;
 @SessionScoped
 public class LoginBean {
 
-    private String username;
-    private String password;
+	private String username;
+	private String password;
 
-    public String getUsername() {
-        return username;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public String login() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        try {
-            request.login(this.username, this.password);
+	public String login() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+		try {
+			request.login(this.username, this.password);
 
-            return "/private/UrunKayit.xhtml?faces-redirect=true";
-        } catch (ServletException e) {
-             
-            //request.isUserInRole(username)
-            if (!e.getMessage().equals("This request has already been authenticated")) {
+			return "/private/UrunKayit.xhtml?faces-redirect=true";
+		} catch (ServletException e) {
 
-                context = FacesContext.getCurrentInstance();
-                context.addMessage(null, new FacesMessage("E-Posta ve/veya şifre hatalı."));
+			// request.isUserInRole(username)
+			if (!e.getMessage().equals("This request has already been authenticated")) {
 
-            }
-        }
-        return "";
-    }
+				context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage("E-Posta ve/veya şifre hatalı."));
 
-    public void logout() {
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        try {
-            request.logout();
-        } catch (ServletException e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Logout failed."));
-        }
-    }
+			}
+		}
+		return "";
+	}
+
+	public void logout() {
+		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+				.getRequest();
+		try {
+			request.logout();
+		} catch (ServletException e) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Logout failed."));
+		}
+	}
 }
